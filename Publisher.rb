@@ -8,10 +8,11 @@ def process_response(response,service_name)
     case service_name
     when "ygosu"
         page = Nokogiri::HTML(response.body)
+        title = page.css('.tit a')[0].text
         children = page.search('td')
         list = children.search('a')[1]
         latest_url = list.to_a[0][1] 
-        return latest_url
+        return "#{latest_url}^#{title}"
     end 
 end
 
@@ -45,17 +46,16 @@ def sync_queue_client(queue_server, user, pass, vhost, send_payload, service_nam
 end
 
 def init(queue_server, user ,pass, vhost ) 
-    sync_url_ygosu = get_response("ygosu", "https://www.ygosu.com/community/real_article")
+    sync_url_ygosu = get_response("ygosu", "https://www.ygosu.com/community/real_article") 
     sync_queue_client(queue_server, user, pass, vhost, sync_url_ygosu, "ygosu" )
     while true
-        latest_url_ygosu = get_response("ygosu", "https://www.ygosu.com/community/real_article")
+        latest_url_ygosu = get_response("ygosu", "https://www.ygosu.com/community/real_article") 
         if (sync_url_ygosu == latest_url_ygosu ) 
             p "[Console] No changes, latest : #{latest_url_ygosu}"
         else
             sync_queue_client(queue_server, user, pass, vhost, latest_url_ygosu, "ygosu" )
-            sync_url_ygosu = get_response("ygosu", "https://www.ygosu.com/community/real_article")
-        end 
-        
+            sync_url_ygosu = get_response("ygosu", "https://www.ygosu.com/community/real_article") 
+        end  
         sleep 2
     end
 end
