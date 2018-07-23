@@ -7,12 +7,16 @@ def process_response(response,service_name)
     latest_url = nil
     case service_name
     when "ygosu"
-        page = Nokogiri::HTML(response.body)
-        title = page.css('.tit a')[0].text
-        children = page.search('td')
-        list = children.search('a')[1]
-        latest_url = list.to_a[0][1] 
-        return "#{latest_url}^#{title}"
+        if response.status == 502
+            return "http://ygosu.com^YGOSU점검중"
+        else
+            page = Nokogiri::HTML(response.body)
+            title = page.css('.tit a')[0].text
+            children = page.search('td')
+            list = children.search('a')[1]
+            latest_url = list.to_a[0][1] 
+            return "#{latest_url}^#{title}"
+        end
     end 
 end
 
