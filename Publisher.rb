@@ -8,7 +8,7 @@ def process_response(response,service_name)
     case service_name
     when "ygosu"
         if response.code == 502
-            return "http://ygosu.com^YGOSU_502"
+            return false
         else
             page = Nokogiri::HTML(response.body) 
             if page.css('.tit a')[0].respond_to?(:text)
@@ -19,7 +19,7 @@ def process_response(response,service_name)
                 return "#{latest_url}^#{title}"
             else
                 title = "Title Parse Error"
-                return "http://ygosu.com^Parse YGOSU Error"
+                return false
             end
         end
     end 
@@ -58,13 +58,17 @@ def init(queue_server, user ,pass, vhost )
     sync_url_ygosu = get_response("ygosu", "https://www.ygosu.com/community/real_article") 
     sync_queue_client(queue_server, user, pass, vhost, sync_url_ygosu, "ygosu" )
     while true
-        latest_url_ygosu = get_response("ygosu", "https://www.ygosu.com/community/real_article") 
-        if (sync_url_ygosu == latest_url_ygosu ) 
-            p "[Console] No changes, latest : #{latest_url_ygosu}"
-        else
-            sync_queue_client(queue_server, user, pass, vhost, latest_url_ygosu, "ygosu" )
+        if sync_url_ygosu == false 
             sync_url_ygosu = get_response("ygosu", "https://www.ygosu.com/community/real_article") 
-        end  
+        else
+            latest_url_ygosu = get_response("ygosu", "https://www.ygosu.com/community/real_article") 
+            if (sync_url_ygosu == latest_url_ygosu ) 
+                p "[Console] No changes, latest : #{latest_url_ygosu}"
+            else
+                sync_queue_client(queue_server, user, pass, vhost, latest_url_ygosu, "ygosu" )
+                sync_url_ygosu = get_response("ygosu", "https://www.ygosu.com/community/real_article") 
+            end  
+        end
         sleep 2
     end
 end
