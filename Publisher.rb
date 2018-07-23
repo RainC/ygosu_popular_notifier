@@ -8,18 +8,19 @@ def process_response(response,service_name)
     case service_name
     when "ygosu"
         if response.code == 502
-            return "http://ygosu.com^YGOSU점검중"
+            return "http://ygosu.com^YGOSU_502"
         else
-            page = Nokogiri::HTML(response.body)
+            page = Nokogiri::HTML(response.body) 
             if page.css('.tit a')[0].respond_to?(:text)
                 title = page.css('.tit a')[0].text
+                children = page.search('td')
+                list = children.search('a')[1]
+                latest_url = list.to_a[0][1]
+                return "#{latest_url}^#{title}"
             else
                 title = "Title Parse Error"
+                return "http://ygosu.com^Parse YGOSU Error"
             end
-            children = page.search('td')
-            list = children.search('a')[1]
-            latest_url = list.to_a[0][1] 
-            return "#{latest_url}^#{title}"
         end
     end 
 end
