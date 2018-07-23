@@ -7,7 +7,7 @@ def process_response(response,service_name)
     latest_url = nil
     case service_name
     when "ygosu"
-        if response.status == 502
+        if response.code == 502
             return "http://ygosu.com^YGOSU점검중"
         else
             page = Nokogiri::HTML(response.body)
