@@ -11,7 +11,11 @@ def process_response(response,service_name)
             return "http://ygosu.com^YGOSU점검중"
         else
             page = Nokogiri::HTML(response.body)
-            title = page.css('.tit a')[0].text
+            if page.css('.tit a')[0].respond_to?(:text)
+                title = page.css('.tit a')[0].text
+            else
+                title = "Title Parse Error"
+            end
             children = page.search('td')
             list = children.search('a')[1]
             latest_url = list.to_a[0][1] 
