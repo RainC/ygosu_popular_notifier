@@ -74,4 +74,4 @@ def init(queue_server, user ,pass, vhost )
 end
 
 
-init( ENV["QUEUE_SERVER"] ,ENV["QUEUE_SERVER_ID"], ENV["QUEUE_SERVER_PW"], "/push") 
+init( ENV["QUEUE_SERVER"] ,ENV["QUEUE_SERVER_ID"], ENV["QUEUE_SERVER_PW"], "/") 
