@@ -43,5 +43,5 @@ def sync_queue_client(queue_server, user, pass, vhost, service_name)
     conn.stop  
 end
  
-sync_queue_client( ENV["QUEUE_SERVER"] ,ENV["QUEUE_SERVER_ID"], ENV["QUEUE_SERVER_PW"], "/push", "ygosu" ) 
+sync_queue_client( ENV["QUEUE_SERVER"] ,ENV["QUEUE_SERVER_ID"], ENV["QUEUE_SERVER_PW"], "/", "ygosu" ) 
  
